@@ -34,17 +34,26 @@ A super simple FastAPI application that allows students to view and sign up for 
 
 ## Data Model
 
-The application uses a simple data model with meaningful identifiers:
+The application uses SQLite for persistent data storage with the following schema:
 
-1. **Activities** - Uses activity name as identifier:
+**Activities Table:**
+- `id` (INTEGER PRIMARY KEY)
+- `name` (TEXT UNIQUE) - Activity name
+- `description` (TEXT) - What the activity is about
+- `schedule` (TEXT) - Meeting times
+- `max_participants` (INTEGER) - Capacity limit
 
-   - Description
-   - Schedule
-   - Maximum number of participants allowed
-   - List of student emails who are signed up
+**Participants Table:**
+- `id` (INTEGER PRIMARY KEY)
+- `activity_id` (FOREIGN KEY) - References activities table
+- `email` (TEXT) - Student email address
+- UNIQUE constraint on (activity_id, email) to prevent duplicate signups
 
-2. **Students** - Uses email as identifier:
-   - Name
-   - Grade level
+## Database
 
-All data is stored in memory, which means data will be reset when the server restarts.
+- **Location:** `activities.db` (stored in the project root directory)
+- **Type:** SQLite3 (built-in with Python, no additional dependencies)
+- **Persistence:** All data persists across application restarts
+- **Initialization:** Database is automatically created and seeded on first run
+
+The database is initialized automatically when the application starts. If the database file already exists, it will reuse it and skip seeding duplicate data.
